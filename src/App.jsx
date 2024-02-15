@@ -5,7 +5,12 @@ import Player from "./components/Player";
 import Log from "./components/Log";
 import { WINNING_COMBINATIONS } from "./winningCombination";
 
-const initialGameBoard = [
+const PLAYERS = {
+  X: "Player 1",
+  O: "Player 2",
+};
+
+const INITIAL_GAME_BOARD = [
   [null, null, null],
   [null, null, null],
   [null, null, null],
@@ -22,32 +27,19 @@ function derivedActivePlayer(gameTurns) {
   return currentPlayer;
 }
 
-function App() {
-  const [players, setPlayers] = useState({ X: "Player 1", O: "Player 2" });
-  const [gameTurns, setGameTurns] = useState([]);
-  // const [activePlayer, setActivePlayer] = useState("X");
-  // derived state - instead of using a state to manage active player, we
-  // use derived state instead. We should minimise usage of state as much
-  //as possible if derived state can be a replacement
-  const activePlayer = derivedActivePlayer(gameTurns);
-
-  // handles player name
-  function handlePlayerNameChange(symbol, newName) {
-    setPlayers((prevPlayer) => {
-      // we dynamically set the key ppty
-      return { ...prevPlayer, [symbol]: newName };
-    });
-  }
-
+function derivedGameBoard(gameTurns) {
   //loop through the initial state of the game board
-  let gameBoard = [...initialGameBoard.map((array) => [...array])];
+  let gameBoard = [...INITIAL_GAME_BOARD.map((array) => [...array])];
   for (const turn of gameTurns) {
     const { square, player } = turn;
     const { row, col } = square;
 
     gameBoard[row][col] = player;
   }
+  return gameBoard;
+}
 
+function deriveWinner(gameBoard, players) {
   //determining the winner
   // loop through the WINNING_COMBINATIONS
   let winner;
@@ -68,6 +60,28 @@ function App() {
       winner = players[firstSquareSymbol];
     }
   }
+  return winner;
+}
+
+function App() {
+  const [players, setPlayers] = useState(PLAYERS);
+  const [gameTurns, setGameTurns] = useState([]);
+  // const [activePlayer, setActivePlayer] = useState("X");
+  // derived state - instead of using a state to manage active player, we
+  // use derived state instead. We should minimise usage of state as much
+  //as possible if derived state can be a replacement
+  const activePlayer = derivedActivePlayer(gameTurns);
+  const gameBoard = derivedGameBoard(gameTurns);
+
+  // handles player name
+  function handlePlayerNameChange(symbol, newName) {
+    setPlayers((prevPlayer) => {
+      // we dynamically set the key ppty
+      return { ...prevPlayer, [symbol]: newName };
+    });
+  }
+
+  const winner = deriveWinner(gameBoard, players);
 
   //determining a draw
   //if all the nine squares are clicked, and winner is false
@@ -85,7 +99,6 @@ function App() {
       return updatedTurns;
     });
   }
-  // console.log(gameTurns);
 
   function handleRestart() {
     setGameTurns([]);
@@ -96,13 +109,13 @@ function App() {
       <div id="game-container">
         <ol id="players" className="highlight-player">
           <Player
-            initialName="Player 1"
+            initialName={PLAYERS.X}
             symbol="X"
             isActive={activePlayer === "X"}
             onChangeName={handlePlayerNameChange}
           />
           <Player
-            initialName="Player 2"
+            initialName={PLAYERS.O}
             symbol="O"
             isActive={activePlayer === "O"}
             onChangeName={handlePlayerNameChange}
