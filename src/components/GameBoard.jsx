@@ -1,16 +1,10 @@
 import { useState } from "react";
 
-const initialGameBoard = [
-  [null, null, null],
-  [null, null, null],
-  [null, null, null],
+const GameBoard = ({ onSelectSquare, board }) => {
+  // const [gameBoard, setGameBoard] = useState(initialGameBoard);
+  // console.log(turns);
 
-  // We don't want to lose the previous state and we must update the state Array. It is advisable to update array in an immutable way. You create a copy of the obj or arr, so that you don't loose the old value.
-];
-const GameBoard = ({ onSelectSquare, activePlayerSymbol }) => {
-  const [gameBoard, setGameBoard] = useState(initialGameBoard);
-
-  const handleSelectSquare = (rowIndex, colIndex) => {
+  // const handleSelectSquare = (rowIndex, colIndex) => {
   //   setGameBoard((prevGameBoard) => {
   //     // create a copy of the old array
   //     const updatedBoard = [
@@ -24,12 +18,15 @@ const GameBoard = ({ onSelectSquare, activePlayerSymbol }) => {
   // };
   return (
     <ol id="game-board">
-      {gameBoard.map((row, rowIndex) => (
+      {board.map((row, rowIndex) => (
         <li key={rowIndex}>
           <ol>
             {row.map((playSymbol, colIndex) => (
               <li key={colIndex}>
-                <button onClick={() => handleSelectSquare(rowIndex, colIndex)}>
+                <button
+                  onClick={() => onSelectSquare(rowIndex, colIndex)}
+                  //if player symbol is null it means the button has not been clicked
+                  disabled={playSymbol !== null}>
                   {playSymbol}
                 </button>
               </li>
