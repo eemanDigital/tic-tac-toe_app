@@ -1,21 +1,7 @@
-import { useState } from "react";
+import React from "react";
 
+// GameBoard component to render the Tic-Tac-Toe board
 const GameBoard = ({ onSelectSquare, board }) => {
-  // const [gameBoard, setGameBoard] = useState(initialGameBoard);
-  // console.log(turns);
-
-  // const handleSelectSquare = (rowIndex, colIndex) => {
-  //   setGameBoard((prevGameBoard) => {
-  //     // create a copy of the old array
-  //     const updatedBoard = [
-  //       ...prevGameBoard.map((innerArray) => [...innerArray]), //a copy of the inner array
-  //     ];
-  //     updatedBoard[rowIndex][colIndex] = activePlayerSymbol;
-  //     return updatedBoard;
-  //   });
-  //   // executes when handleSelectSquare is triggered
-  //   onSelectSquare();
-  // };
   return (
     <ol id="game-board">
       {board.map((row, rowIndex) => (
@@ -24,8 +10,9 @@ const GameBoard = ({ onSelectSquare, board }) => {
             {row.map((playSymbol, colIndex) => (
               <li key={colIndex}>
                 <button
+                  // Call onSelectSquare with the row and column index when the button is clicked
                   onClick={() => onSelectSquare(rowIndex, colIndex)}
-                  //if player symbol is null it means the button has not been clicked
+                  // Disable the button if the square has already been clicked (playSymbol is not null)
                   disabled={playSymbol !== null}>
                   {playSymbol}
                 </button>
